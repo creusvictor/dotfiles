@@ -112,9 +112,9 @@ export GEMINI_API_KEY=""
 export OPENAI_API_KEY=""
 export GOOGLE_CLIENT_ID=""
 export GOOGLE_SECRET_ID=""
-export DATADOPE_MAIL="victor.creus@datadope.io"
-export DATADOPE_NEXUS_ENDPOINT="nexusregistry.opensolutions.cloud"
-export DATADOPE_NEXUS_API_KEY="124d9691-6966-341f-a4a2-61236ebf1492"
+#export DATADOPE_MAIL=""
+#export DATADOPE_NEXUS_ENDPOINT=""
+#export DATADOPE_NEXUS_API_KEY=""
 
 #Functions
 datadope-nexus ()
