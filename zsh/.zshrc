@@ -75,7 +75,7 @@ zstyle :omz:plugins:ssh-agent agent-forwarding yes
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(ansible argocd azure docker docker-compose eza git gcloud helm httpie kitty kubectl python redis-cli ssh tailscale taskwarrior terraform tmux vagrant zsh-interactive-cd)
+plugins=(ansible argocd azure docker docker-compose eza git gcloud helm httpie kitty kubectl python redis-cli ssh tailscale taskwarrior terraform tmux vagrant zsh-interactive-cd zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -107,48 +107,59 @@ fi
 #
 #Exports
 export PATH="$HOME/go/bin:$PATH"
-export EDITOR="vim"
-export GEMINI_API_KEY=""
-export OPENAI_API_KEY=""
-export GOOGLE_CLIENT_ID=""
-export GOOGLE_SECRET_ID=""
-#export DATADOPE_MAIL=""
-#export DATADOPE_NEXUS_ENDPOINT=""
-#export DATADOPE_NEXUS_API_KEY=""
+export PATH=$PATH:/home/victor/.local/bin
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+export EDITOR="nvim"
+export OBSIDIAN_VAULT=""
+export KPDB=""
+export KPKF=""
 
 #Functions
-datadope-nexus ()
-{
-	docker login $DATADOPE_NEXUS_ENDPOINT --username $DATADOPE_MAIL --password $DATADOPE_NEXUS_API_KEY
-	helm registry login $DATADOPE_NEXUS_ENDPOINT --username $DATADOPE_MAIL --password $DATADOPE_NEXUS_API_KEY
+venv_activate() {
+    if [ -f .venv/bin/activate ]; then
+        print "Activating virtual environment from: .venv in $PWD"
+        print "Enjoy working on the ${(t)%PWD} project, ${USER:u}!"
+        source .venv/bin/activate
+
+    elif [ -f venv/bin/activate ]; then
+        print "Activating virtual environment from: venv in $PWD"
+        print "Enjoy working on the ${(t)%PWD} project, ${USER:u}!"
+        source venv/bin/activate
+
+    else
+        print -u2 "Error: No 'venv' or '.venv' directory found."
+        return 1
+    fi
 }
-datadope-vault ()
+term-colors ()
 {
-	VAULT_ADDR=https://blue.datadope.io vault login -method=oidc
-}
-fcc-vault ()
-{
-	VAULT_ADDR=https://vault.fcc.intfcc.local vault login -tls-skip-verify $(VAULT_ADDR=https://blue.datadope.io vault kv get -field=root_token fcc/iometrics/pro/vault)
+    for i in {0..255}; do
+  	printf "\x1b[38;5;%sm%3d " "$i" "$i"
+  	(( (i + 1) % 16 == 0 )) && echo
+    done
+
 }
 
 # Aliases
-alias zshrc="vim ~/.zshrc"
+alias zshrc='vim ~/.zshrc'
+alias ff='fastfetch'
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias rgrep='rgrep --color'
 alias cat='bat --theme="Solarized (dark)"'
 alias vagrant='TERM=xterm-256color vagrant'
 alias icat='kitten icat'
-alias ssh='ggh'
-alias xclip='xclip -sel clip'
-alias weather='curl wttr.in/Barcelona'
+alias ssh='TERM=xterm-256color ssh'
+alias xcp='xclip -sel clip'
 alias python='python3'
 alias gcal='gcalcli'
 alias lgit='lazygit'
+alias ff='fastfetch'
+alias obs='obsidian-fzf'
+alias kpass='keepassxc-fzf'
+alias ktop='k ktop'
 #
 #
 #
-# Oh-my-Posh
-export PATH=$PATH:/home/victor/.local/bin
-eval "$(oh-my-posh init zsh --config "/home/victor/creusvictor_oh_my_posh/creusvictor.omp.json" )"
 
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /usr/bin/vault vault
@@ -158,3 +169,5 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+# opencode
+export PATH=/home/victor/.opencode/bin:$PATH
